@@ -23,7 +23,7 @@ services:
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
     volumes:
-      - ${MARIADB_PATH_HOST}:{$MARIADB_PATH_CONTAINER}
+      - ${MARIADB_PATH_HOST}:${MARIADB_PATH_CONTAINER}
   
   adminer:
     image: adminer
