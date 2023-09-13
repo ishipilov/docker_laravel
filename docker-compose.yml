@@ -1,0 +1,49 @@
+version: "3"
+services:
+  apache:
+    build: ./apache
+    environment:
+      - APACHE_RUN_USER:${APACHE_RUN_USER}
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+      - ${ENV_PATH_HOST}:${ENV_PATH_CONTAINER}
+      - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
+      - ${VARLOG_PATH_HOST}:${VARLOG_PATH_CONTAINER}
+    ports:
+      - 8080:80
+    working_dir: ${APP_PATH_CONTAINER}
+  
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    volumes:
+      - ${MARIADB_PATH_HOST}:$MARIADB_PATH_CONTAINER}
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 6080:8080
+  
+  composer:
+    image: composer
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    working_dir: ${APP_PATH_CONTAINER}
+    command: >
+      bash -c "composer install 
+      && chgrp -R www-data storage bootstrap/cache 
+      && chmod -R ug+rwx storage bootstrap/cache 
+      && chown -R www-data:www-data storage/logs"
+  
+  node:
+    image: node
+    volumes:
+      - ${APP_PATH_HOST}:${NODE_PATH_CONTAINER}
+    working_dir: ${NODE_PATH_CONTAINER}
+    command: npm install
