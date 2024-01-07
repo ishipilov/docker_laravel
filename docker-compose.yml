@@ -10,6 +10,7 @@ services:
       - ${PHP_INI_PATH_HOST}:${PHP_INI_PATH_CONTAINER}
       - ${APP_LOGS_PATH_HOST}:${APP_LOGS_PATH_CONTAINER}
       - ${VARLOG_PATH_HOST}:${VARLOG_PATH_CONTAINER}
+      - ${UPLAODS_PATH_HOST}:${UPLAODS_PATH_CONTAINER}
     ports:
       - 8080:80
     working_dir: ${APP_PATH_CONTAINER}
@@ -37,10 +38,10 @@ services:
       - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
     working_dir: ${APP_PATH_CONTAINER}
     command: >
-      bash -c "composer install 
-      && chgrp -R www-data storage bootstrap/cache 
+      bash -c "chgrp -R www-data storage bootstrap/cache 
       && chmod -R ug+rwx storage bootstrap/cache 
-      && chown -R www-data:www-data storage/logs"
+      && chown -R www-data:www-data storage/logs
+      && composer install"
   
   node:
     image: node
